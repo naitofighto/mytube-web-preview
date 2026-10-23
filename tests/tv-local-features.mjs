@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import {chromium} from 'playwright';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const browser=await chromium.launch({headless:true});
+const page=await browser.newPage({viewport:{width:1600,height:1050}});
+const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+const nav=async(name)=>{await page.locator('[data-kind="nav"]').filter({hasText:name}).first().click()};
+try{
+ await page.goto(pathToFileURL(resolve('index.html')).href);
+ await page.locator('[data-kind="play"]').click();
+ await page.locator('#watchLaterButton').click();
+ await page.locator('#saveButton').click();
+ await page.locator('#exitPlayer').click();
+ await nav('Cronologia');assert.equal(await page.locator('.results .tile').count(),1,'History must record opened video');
+ await nav('Guarda più tardi');assert.equal(await page.locator('.results .tile').count(),1,'Watch later must contain saved video');
+ await nav('Raccolta');assert.equal(await page.locator('.results .tile').count(),1,'Collection must contain saved video');
+ await nav('Impostazioni');
+ await page.locator('#prefAutoplay').check();
+ await page.locator('#prefCompact').uncheck();
+ await page.reload();
+ await nav('Impostazioni');
+ assert.equal(await page.locator('#prefAutoplay').isChecked(),true,'Autoplay must persist');
+ assert.equal(await page.locator('#prefCompact').isChecked(),false,'Row density must persist');
+ await nav('Cronologia');assert.equal(await page.locator('.results .tile').count(),1,'History must persist reload');
+ await nav('Impostazioni');await page.locator('#clearHistory').click();
+ await nav('Cronologia');assert.equal(await page.locator('.results .tile').count(),0,'Clear history must remove entries');
+ await nav('Guarda più tardi');assert.equal(await page.locator('.results .tile').count(),1,'Clearing history must not erase watch later');
+ assert.deepEqual(errors,[],'No JS errors');
+ console.log('PASS persistent history, watch later, saved collection, settings, reload, and clear history');
+}catch(e){console.error('FAIL',e,'JS errors',errors);await page.screenshot({path:'state-qa-failure.png'});process.exitCode=1}finally{await browser.close()}

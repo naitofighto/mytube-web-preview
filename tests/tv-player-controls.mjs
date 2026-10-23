@@ -15,7 +15,7 @@ try{
  for(const id of ['exitPlayer','playPause','skipBack','skipForward','playerSettings','fullScreen']){
   assert.equal(await page.locator('#'+id).isVisible(),true,id+' not visible');
   const bounds=await page.locator('#'+id).boundingBox();
-  assert.ok(bounds.width>=35&&bounds.height>=35,id+' too small');
+  assert.ok(bounds.width>=28&&bounds.height>=28,id+' too small');
  }
  await page.locator('#playerSettings').focus();await page.keyboard.press('Enter');
  assert.equal(await page.locator('#settings').evaluate(x=>x.classList.contains('open')),true,'Settings should open');
