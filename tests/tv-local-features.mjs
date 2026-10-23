@@ -8,7 +8,7 @@ const errors=[];page.on('pageerror',e=>errors.push(String(e)));
 const nav=async(name)=>{await page.locator('[data-kind="nav"]').filter({hasText:name}).first().click()};
 try{
  await page.goto(pathToFileURL(resolve('index.html')).href);
- await page.locator('[data-kind="play"]').click();
+ await page.locator('#nav-0').focus();await page.keyboard.press('ArrowRight');await page.keyboard.press('Enter');
  await page.locator('#watchLaterButton').click();
  await page.locator('#saveButton').click();
  await page.locator('#exitPlayer').click();
