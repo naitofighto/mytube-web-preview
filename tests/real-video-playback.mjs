@@ -7,7 +7,7 @@ for(const [label,engine,mobile] of [['Chromium TV',chromium,false],['WebKit iPho
  try{
   await page.goto(base,{waitUntil:'domcontentloaded'});
   const src=await page.locator('#demoVideo').getAttribute('src');assert.equal(src,'media/mytube-demo.mp4');
-  const resp=await page.request.get(base+src);assert.equal(resp.status(),200);assert.match(resp.headers()['content-type']||'','video/mp4');
+  const resp=await page.request.get(base+src);assert.equal(resp.status(),200);assert.match(resp.headers()['content-type']||'',/video\/mp4/);
   await page.locator('[data-kind="play"]').first().evaluate(el=>el.click());
   await page.locator('#playPause').evaluate(el=>el.click());
   await page.waitForFunction(()=>{const v=document.querySelector('#demoVideo');return v.readyState>=2&&v.currentTime>0.5},{timeout:15000});
