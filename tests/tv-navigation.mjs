@@ -5,6 +5,8 @@ import {chromium} from 'playwright';
 
 const browser = await chromium.launch({headless: true});
 const page = await browser.newPage({viewport: {width: 1600, height: 1050}});
+page.on('pageerror',e=>console.error('PAGE_ERROR',String(e)));
+page.on('console',m=>{if(m.type()==='error')console.error('BROWSER_CONSOLE',m.text())});
 const snapshot = async () => page.evaluate(() => {
   const a = document.activeElement;
   const rail = a?.closest('.rail');
@@ -21,8 +23,11 @@ try {
   await page.locator('.tile').first().waitFor();
   let s = await snapshot();
   assert.equal(s.id, 'nav-0', 'Initial focus must be Home in navigation');
+  await page.evaluate(()=>{window.__keyEvents=[];document.addEventListener('keydown',e=>window.__keyEvents.push({key:e.key,defaultPrevented:e.defaultPrevented}),{capture:true})});
+  console.log('BEFORE',JSON.stringify(await page.evaluate(()=>({play:!!document.querySelector('[data-kind="play"]'),nav:document.activeElement?.id,focusables:document.querySelectorAll('#stage [data-focusable]').length,navOffset:document.activeElement?.offsetParent?.className||null}))));
   s = await press('ArrowRight');
-  assert.equal(s.kind, 'play', 'Right from nav must enter hero');
+  console.log('AFTER',JSON.stringify(await page.evaluate(()=>({nav:document.activeElement?.id,keys:window.__keyEvents,playExists:!!document.querySelector('[data-kind="play"]')}))));
+  assert.equal(s.kind, 'play' , 'Right from nav must enter hero');
   s = await press('ArrowDown');
   assert.equal(s.title, 'Continua a guardare', 'Down from hero must enter first video row');
   s = await press('ArrowRight');
