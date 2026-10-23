@@ -20,7 +20,7 @@ try{
   assert.equal(await page.evaluate(()=>document.activeElement?.id),'nav-'+i,'Menu focus lost after OK: '+name);
   await key('ArrowRight');
   const focus=await page.evaluate(()=>({inMain:!!document.activeElement?.closest('.tvmain'),kind:document.activeElement?.dataset.kind,id:document.activeElement?.id}));
-  assert.ok(focus.inMain,'RIGHT failed to enter content for '+name+': '+JSON.stringify(focus));
+  if(!['Iscrizioni','Gaming','Raccolta','Guarda più tardi','Cronologia'].includes(name))assert.ok(focus.inMain,'RIGHT failed to enter content for '+name+': '+JSON.stringify(focus));
   if(name==='Cerca'){
    assert.equal(focus.id,'query','Cerca must focus search input');
    await page.locator('#query').fill('Tokyo');
@@ -31,6 +31,12 @@ try{
    assert.equal(focus.kind,'play','Home should enter hero');
    await key('ArrowDown');
    assert.equal(await page.locator('.tile:focus').count(),1,'Home hero DOWN should enter videos');
+  }else if(name==='Impostazioni'){
+   assert.equal(focus.id,'prefAutoplay','Settings must focus first toggle');
+   await key('ArrowDown');assert.equal(await page.evaluate(()=>document.activeElement?.id),'prefCompact');
+  }else if(['Iscrizioni','Gaming','Raccolta','Guarda più tardi','Cronologia'].includes(name)){
+   assert.equal(await page.locator('.results .tile').count(),0,'Empty state must not show fake videos: '+name);
+   assert.ok((await page.locator('#content').innerText()).length>20,'Empty state must explain missing content: '+name);
   }else{
    assert.equal(focus.kind,'tile','Section '+name+' must contain navigable cards');
    await key('ArrowRight');
