@@ -90,6 +90,34 @@ header.site>div{display:flex;align-items:center;gap:9px}.live{font-weight:750;le
  .remote-wrap{padding:8px 12px;gap:16px;margin:8px auto 16px}.remote-help{font-size:12px}.remote{grid-template-columns:repeat(5,44px);grid-template-rows:repeat(2,42px);gap:5px;max-width:100%}
  .footnote{padding:0 14px 24px;font-size:11px}
 }
+
+/* Player control clarity: high contrast, primary action, accessible touch targets. */
+.playeractions .tvbutton{color:#f8f9fc;background:#252a34;border:1px solid #444b58;transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.playeractions .tvbutton:hover{background:#343c4b}
+.playeractions .tvbutton:focus,.playeractions .tvbutton:focus-visible{color:#fff;background:#343c4b;outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 5px #ed375b55}
+.playeractions #playPause{background:#f3f4f7;color:#14171d;border-color:#f3f4f7}
+.playeractions #playPause:focus,.playeractions #playPause:focus-visible{background:#fff;color:#111318;outline:3px solid #ff4968;box-shadow:0 0 0 5px #ffffff50}
+.playeractions #exitPlayer{background:#15191f;border-color:#454b57}
+.playeractions #watchLaterButton,.playeractions #saveButton{background:#202530}
+.playeractions .tvbutton:active{transform:scale(.975)}
+@media(max-width:700px){
+ .player,.player.open{padding-bottom:calc(18px + env(safe-area-inset-bottom));}
+ .playerinfo{font-size:clamp(17px,5vw,21px);line-height:1.2}
+ .player video{margin-top:72px;min-height:190px;background:#000}
+ .playeractions{gap:10px;padding:12px 14px 18px;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch}
+ .playeractions .tvbutton{font-size:13px;font-weight:700;min-height:52px;border-radius:14px;padding:11px 8px;line-height:1.2;display:flex;justify-content:center;align-items:center;gap:5px;min-width:0}
+ .playeractions #exitPlayer{grid-column:1/3;order:0}
+ .playeractions #playPause{grid-column:3/5;order:0}
+ .playeractions #skipBack{grid-column:1/3;order:1}
+ .playeractions #skipForward{grid-column:3/5;order:1}
+ .playeractions .timeline{grid-column:1/-1;order:2;margin-top:8px;height:6px}
+ .playeractions .playertime{grid-column:1/-1;order:3;text-align:center;font-size:14px;min-height:23px}
+ .playeractions #playerSettings{grid-column:1/3;order:4}
+ .playeractions #fullScreen{grid-column:3/5;order:4}
+ .playeractions #watchLaterButton{grid-column:1/3;order:5}
+ .playeractions #saveButton{grid-column:3/5;order:5}
+ .playeractions #retryVideo{grid-column:1/-1;order:6}
+}
 </style>
 </head>
 <body>
@@ -97,7 +125,7 @@ header.site>div{display:flex;align-items:center;gap:9px}.live{font-weight:750;le
 <div class="preview-wrap"><div class="frame" id="frame"><div id="stage">
 <nav class="nav" id="nav" aria-label="Menu MyTube"><div class="brand"><span class="logomark">▶</span><span class="word">MyTube</span></div><div class="nav-items" id="navitems"></div></nav>
 <div class="tvmain" id="tvmain"><div class="tvtop"><div class="tvtitle">MyTube <span style="color:#878c99">/</span> <span id="sectionName">Per te</span></div><div class="tvtopright"><button class="action-icon" id="searchShortcut" data-focusable>⌕ <span style="font-size:16px">Cerca</span></button><div class="avatar" aria-hidden="true"></div></div></div><div id="content"></div></div>
-<div class="player" id="player"><video id="demoVideo" playsinline preload="none" src="media/mytube-demo.mp4"></video><div class="playervignette"></div><div id="playbackStatus" role="status" aria-live="polite"></div><div class="playerinfo"><span id="playerTitle">Video dimostrativo</span><small>Clip di test · Non è un video YouTube</small></div><div class="playeractions"><button class="tvbutton" data-focusable id="exitPlayer">✕ Indietro</button><button class="tvbutton primary" data-focusable id="playPause">▶ Riproduci</button><button class="tvbutton" data-focusable id="skipBack">−10s</button><button class="tvbutton" data-focusable id="skipForward">+10s</button><span class="timeline"><span class="passed" id="passed"></span></span><span class="playertime" id="playTime">00:00 / 00:00</span><button class="tvbutton" data-focusable id="playerSettings">⚙ Impostazioni</button><button class="tvbutton" data-focusable id="fullScreen">⛶ Schermo intero</button><button class="tvbutton" data-focusable id="watchLaterButton">＋ Guarda più tardi</button><button class="tvbutton" data-focusable id="saveButton">☆ Raccolta</button><button class="tvbutton" data-focusable id="retryVideo" hidden>↻ Riprova video</button></div><div class="player-modal" id="settings"><h3>Impostazioni player</h3><div class="pref"><span>Qualità</span><span>Automatica (demo)</span></div><div class="pref"><span>Sottotitoli</span><span>Non disponibili</span></div><div class="pref"><label for="playbackSpeed">Velocità</label><select id="playbackSpeed" data-focusable aria-label="Velocità riproduzione"><option value="0.5">0,5×</option><option value="0.75">0,75×</option><option value="1" selected>1×</option><option value="1.25">1,25×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></div><div class="pref"><span>SponsorBlock</span><span>Da integrare</span></div><button class="tvbutton primary" data-focusable id="closeSettings" style="margin-top:20px">Chiudi</button></div></div>
+<div class="player" id="player"><video id="demoVideo" aria-label="Filmato dimostrativo MyTube" playsinline preload="none" src="media/mytube-demo.mp4"></video><div class="playervignette"></div><div id="playbackStatus" role="status" aria-live="polite"></div><div class="playerinfo"><span id="playerTitle">Video dimostrativo</span><small>Clip di test · Non è un video YouTube</small></div><div class="playeractions"><button class="tvbutton" data-focusable id="exitPlayer">✕ Indietro</button><button class="tvbutton primary" data-focusable id="playPause">▶ Riproduci</button><button class="tvbutton" data-focusable id="skipBack">−10s</button><button class="tvbutton" data-focusable id="skipForward">+10s</button><span class="timeline"><span class="passed" id="passed"></span></span><span class="playertime" id="playTime">00:00 / 00:00</span><button class="tvbutton" data-focusable id="playerSettings">⚙ Impostazioni</button><button class="tvbutton" data-focusable id="fullScreen">⛶ Schermo intero</button><button class="tvbutton" data-focusable id="watchLaterButton">＋ Guarda più tardi</button><button class="tvbutton" data-focusable id="saveButton">☆ Raccolta</button><button class="tvbutton" data-focusable id="retryVideo" hidden>↻ Riprova video</button></div><div class="player-modal" id="settings"><h3>Impostazioni player</h3><div class="pref"><span>Qualità</span><span>Automatica (demo)</span></div><div class="pref"><span>Sottotitoli</span><span>Non disponibili</span></div><div class="pref"><label for="playbackSpeed">Velocità</label><select id="playbackSpeed" data-focusable aria-label="Velocità riproduzione"><option value="0.5">0,5×</option><option value="0.75">0,75×</option><option value="1" selected>1×</option><option value="1.25">1,25×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></div><div class="pref"><span>SponsorBlock</span><span>Da integrare</span></div><button class="tvbutton primary" data-focusable id="closeSettings" style="margin-top:20px">Chiudi</button></div></div>
 </div></div></div>
 <div class="remote-wrap"><div class="remote-help"><strong>Telecomando di prova</strong> — usa le frecce della tastiera e Invio, oppure questi pulsanti. Il menu si restringe mentre esplori i video e si espande tornando a sinistra. Puoi anche usare il mouse o il touch.</div><div class="remote"><button data-key="Back" title="Indietro">↩</button><button data-key="ArrowUp" title="Su">↑</button><button data-key="ArrowLeft" title="Sinistra">←</button><button data-key="ArrowDown" title="Giù">↓</button><button data-key="Enter" title="OK">OK</button><button data-key="ArrowRight" title="Destra">→</button><button data-key="Space" title="Riproduci/Pausa">▶</button><button data-key="Settings" title="Impostazioni">⚙</button></div></div>
 <p class="footnote">Anteprima web indipendente: serve a collaudare estetica e navigazione senza APK. Prestazioni Android TV, Google login, video reali di YouTube e blocco pubblicità non sono ancora verificati.</p>
