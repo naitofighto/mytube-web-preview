@@ -1,0 +1,29 @@
+name: MyTube Web TV navigation QA
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tv-navigation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Run browser remote-control navigation tests
+        run: node tests/tv-navigation.mjs
+      - name: Upload navigation screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mytube-tv-navigation-screenshots
+          path: nav-*.png
+          if-no-files-found: ignore
