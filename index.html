@@ -100,7 +100,7 @@ function chooseNext(direction){
  if(!player.classList.contains('open')&&nav){
   const items=$$('#nav .navbtn'),index=items.indexOf(active);
   if(isDown||isUp){items[Math.min(items.length-1,Math.max(0,index+(isDown?1:-1)))].focus();return}
-  if(isRight){const target=lastContentFocus&&lastContentFocus.closest('.tvmain')&&document.contains(lastContentFocus)?lastContentFocus:($('[data-kind="play"]')||$('.tile'));if(target)target.focus();return}
+  if(isRight){const target=lastStageFocus&&lastStageFocus.closest('.tvmain')&&document.contains(lastStageFocus)?lastStageFocus:($('[data-kind="play"]')||$('.tile'));if(target)target.focus();return}
   return;
  }
  if(!player.classList.contains('open')&&tile){
