@@ -38,7 +38,7 @@ try{
    await key('ArrowDown');
    assert.equal(await page.locator('.tile:focus').count(),1,'Grid vertical navigation failed: '+name);
   }
-  await key('Backspace');
+  await key('Escape');
   assert.equal(await page.locator('#sectionName').innerText(),'Per te','Back should return Home from '+name);
   passed++;console.log('PASS menu',i,name);
  }
