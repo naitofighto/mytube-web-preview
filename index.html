@@ -88,12 +88,15 @@ function togglePlay(){if(video.paused){video.play().then(()=>{$('#playPause').te
 const time=n=>{n=Math.floor(Number.isFinite(n)?n:0);return `${String(Math.floor(n/60)).padStart(2,'0')}:${String(n%60).padStart(2,'0')}`};
 video.addEventListener('timeupdate',()=>{$('#passed').style.width=`${video.duration?video.currentTime/video.duration*100:0}%`;$('#playTime').textContent=`${time(video.currentTime)} / ${time(video.duration)}`});video.addEventListener('ended',()=>{$('#playPause').textContent='▶ Rivedi'});
 function chooseNext(direction){
- const focusable=$$((player.classList.contains('open')?'#player ':'#stage ')+'[data-focusable]').filter(x=>x.getClientRects().length && x.offsetParent);
- const active=focusable.includes(document.activeElement)?document.activeElement:lastStageFocus;
+ const focusable=$$((player.classList.contains('open')?'#player ':'#stage ')+'[data-focusable]').filter(x=>x.getClientRects().length && getComputedStyle(x).visibility!=='hidden');
+ const active=document.activeElement?.matches?.('[data-focusable]')?document.activeElement:lastStageFocus;
  if(!focusable.length)return;
  if(!active||!focusable.includes(active)){$('#nav-0').focus();return}
  const isLeft=direction==='ArrowLeft',isRight=direction==='ArrowRight',isDown=direction==='ArrowDown',isUp=direction==='ArrowUp';
  const nav=active.closest('#nav'),tile=active.closest('.tile');
+ if(!player.classList.contains('open')&&active.dataset.kind==='play'&&isDown){
+  const first=$('#content .section .tile');if(first)first.focus();return;
+ }
  if(!player.classList.contains('open')&&nav){
   const items=$$('#nav .navbtn'),index=items.indexOf(active);
   if(isDown||isUp){items[Math.min(items.length-1,Math.max(0,index+(isDown?1:-1)))].focus();return}
